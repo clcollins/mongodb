@@ -95,4 +95,4 @@
           src: "{{ item.src }}"
           dest: "{{ item.dest }}"
           mode: 0755
-        with_items: "{{ runit_files }}"
+        with_items: "{{ mongo_runit_service_files }}"
