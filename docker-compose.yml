@@ -1,0 +1,12 @@
+version: '2'
+services:
+  centos:
+    build:
+      context: .
+      dockerfile: Dockerfile-centos
+    image: mongodb:centos
+  ubuntu:
+    build:
+      context: .
+      dockerfile: Dockerfile-ubuntu
+    image: mongodb:ubuntu
