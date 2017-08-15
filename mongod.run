@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -x
+
+if [ -f /etc/sysconfig/mongod ]
+  then . /etc/sysconfig/mongod
+fi
+
+if [ ! -d $PIDDIR ]
+  then install -d -m 0755 -o $MONGO_USER -g $MONGO_GROUP $PIDDIR
+fi
+
+ulimit -f unlimited
+ulimit -t unlimited
+ulimit -v unlimited
+ulimit -n 64000
+ulimit -m unlimited
+ulimit -u 64000
+
+if [ ! -f $SYSTEM_LOG ]
+  then mkdir -p $LOGDIR
+  touch $SYSTEM_LOG
+fi
+
+chmod 750 $LOGDIR
+chmod 640 $SYSTEM_LOG
+chown -R mongod.mongod $LOGDIR
+chown -R mongod.mongod $STORAGE_DIR
+
+echo "Unsetting NUMACTL settings - not used, but here if needed"
+unset NUMACTL # We don't needs this yet, but I'll leave it here
+
+echo -n $"Starting mongod: "
+exec $NUMACTL $mongod $OPTIONS >/dev/null 2>&1
+
+
+

@@ -1,0 +1,88 @@
+---
+  - hosts: all
+
+    tasks:
+      - name: Gather | print os info
+        debug:
+          msg: "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}"
+
+      - name: Gather | os info
+        include_vars: "{{ item }}"
+        with_first_found:
+          - "{{ ansible_distribution }}-{{ ansible_distribution_major_version}}.yml"
+          - "{{ ansible_distribution }}.yml"
+        tags: vars
+
+      - name: Gather | default info
+        include_vars:
+          file: default.yml
+        tags: vars
+
+      - name: MongoDB | add mongodb.org apt-key
+        apt_key:
+          keyserver: hkp://keyserver.ubuntu.com:80
+          id: 0C49F3730359A14518585931BC711F9BA15703C6
+          state: present
+        when: ansible_distribution|lower == 'ubuntu'
+
+      - name: MongoDB | add mongodb.org apt repository
+        apt_repository:
+          repo: deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse
+          state: present
+        when: ansible_distribution|lower == 'ubuntu'
+
+      - name: MongoDB | add mongodb.org yum repository
+        yum_repository:
+          name: MongoDB Repository
+          baseurl: "{{ mongo_yum_baseurl }}"
+          gpgkey: "{{ mongo_yum_gpgkey }}"
+          gpgcheck: yes
+          enabled: yes
+        when: ansible_distribution|lower == 'centos'
+
+      - name: MongoDB | install MongoDB
+        package:
+          name: "{{ item }}"
+        with_items: "{{ mongo_pkgs }}"
+
+      - name: MongoDB | install Runit
+        apt:
+          name: runit
+          update_cache: yes
+        when: ansible_distribution|lower == 'ubuntu'
+
+      - name: MongoDB | install Runit
+        yum:
+          name: "{{ runit_rpm_src }}" 
+          state: present
+        when: ansible_distribution|lower == 'centos'
+
+      - name: MongoDB | copy mongod.conf
+        file:
+          src: mongod.conf
+          dest: /etc/mongod.conf
+
+      - name: MongoDB | copy mongod sysconfig
+        file:
+          src: mongod.sysconfig
+          dest: /etc/sysconfig/mongod
+
+      - name: MongoDB | create runit service dirs
+        file:
+          path: "{{ item }}"
+          state: directory
+          mode: 0755
+        with_items: "{{ mongo_runit_service_dirs }}"
+        
+      - name: MongoDB | copy mongod runfile
+        file:
+          src: mongod.run
+          dest: /etc/service/mongodb/run
+          mode: 0755
+
+      - name: MongoDB | copy mongod downfile
+        file:
+          src: mongod.down
+          dest: /etc/service/mongodb/control/d
+          mode: 0755
+

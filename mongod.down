@@ -1,0 +1,39 @@
+#!/bin/bash
+
+set -x 
+
+if [ -f /etc/sysconfig/mongod ]
+  then . /etc/sysconfig/mongod
+fi
+
+mongo_killproc()
+{
+  local pid_file=$1
+  local procname=$2
+  local -i delay=300
+  local -i duration=10
+  local pid=`pidofproc -p "${pid_file}" ${procname}`
+
+  kill -TERM $pid >/dev/null 2>&1
+  usleep 100000
+  local -i x=0
+  while [ $x -le $delay ] && checkpid $pid; do
+    sleep $duration
+    x=$(( $x + $duration))
+  done
+
+  kill -KILL $pid >/dev/null 2>&1
+  usleep 100000
+
+  checkpid $pid # returns 0 only if the process exists
+  local RC=$? 
+  [ "$RC" -eq 0 ] && failure "${procname} shutdown" || rm -f "${pid_file}"; success "${procname} shutdown"
+  RC=$((! $RC)) # invert return code so we return 0 when process is dead.
+  return $RC
+}
+
+echo -n $"Stopping mongod: "
+mongo_killproc "$PIDFILEPATH" $mongod
+RETVAL=$?
+echo
+[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongod

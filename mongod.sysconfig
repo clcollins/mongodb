@@ -1,0 +1,17 @@
+# override configuration values set in the config files
+
+mongod="/usr/bin/mongod"
+
+CONFIGFILE="/etc/mongod.conf"
+OPTIONS=" -f $CONFIGFILE"
+MONGO_USER=mongod
+MONGO_GROUP=mongod
+
+NUMACTL="/usr/bin/numactl $NUMACTL_ARGS"
+
+PIDFILEPATH=`awk -F'[:=]' -v IGNORECASE=1 '/^[[:blank:]]*(processManagement\.)?pidfilepath[[:blank:]]*[:=][[:blank:]]*/{print $2}' "$CONFIGFILE" | tr -d "[:blank:]\"'" | awk -F'#' '{print $1}'`
+PIDDIR=`dirname $PIDFILEPATH`
+
+SYSTEM_LOG='/var/log/mongodb/mongod.log'
+LOGDIR="$(dirname $SYSTEM_LOG)"
+STORAGE_DIR='/var/lib/mongo'

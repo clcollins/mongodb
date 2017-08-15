@@ -1,0 +1,26 @@
+FROM ubuntu:17.10
+LABEL maintainer Chris Collins <collins.christopher@gmail.com>
+
+LABEL name "mongodb"
+LABEL version "0.1"
+LABEL release "1"
+LABEL summary "Community Honey Network mongodb container"
+LABEL description "MongoDB is an open-source, document database designed for ease of development and scaling"
+LABEL authoritative-source-url "https://github.com/CommunityHoneyNetwork/mongodb"
+LABEL changelog-url "https://github.com/CommunityHoneyNetwork/mongodb/commits/master"
+
+ENV playbook "mongodb.yml"
+
+RUN apt-get update \
+      && apt-get install -y ansible
+
+RUN echo "localhost ansible_connection=local" >> /etc/ansible/hosts
+ADD . /opt/
+RUN ansible-playbook /opt/${playbook}
+
+EXPOSE 27017
+
+ENTRYPOINT ["/sbin/runsvdir", "-P", "/etc/service"]
+
+## RUN semanage port -a -t mongod_port_t -p tcp 27017
+
