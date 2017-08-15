@@ -20,7 +20,7 @@ RUN ansible-playbook /opt/${playbook}
 
 EXPOSE 27017
 
-ENTRYPOINT ["/sbin/runsvdir", "-P", "/etc/service"]
+ENTRYPOINT ["/usr/bin/runsvdir", "-P", "/etc/service"]
 
 ## RUN semanage port -a -t mongod_port_t -p tcp 27017
 
