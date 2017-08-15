@@ -78,6 +78,20 @@
           mode: 0755
         when: ansible_distribution|lower == 'ubuntu'
 
+      - name: MongoDB | create pidfile path on Ubuntu
+        file:
+          path: /var/run/mongodb
+          state: directory
+          mode: 0755
+        when: ansible_distribution|lower == 'ubuntu'
+
+      - name: MongoDB | create libdir path on Ubuntu
+        file:
+          path: /var/lib/mongo
+          state: directory
+          mode: 0755
+        when: ansible_distribution|lower == 'ubuntu'
+
       - name: MongoDB | copy mongod sysconfig
         copy:
           src: mongod.sysconfig

@@ -9,7 +9,10 @@ MONGO_GROUP=mongod
 
 NUMACTL="/usr/bin/numactl $NUMACTL_ARGS"
 
-PIDFILEPATH=`awk -F'[:=]' -v IGNORECASE=1 '/^[[:blank:]]*(processManagement\.)?pidfilepath[[:blank:]]*[:=][[:blank:]]*/{print $2}' "$CONFIGFILE" | tr -d "[:blank:]\"'" | awk -F'#' '{print $1}'`
+# This awk command does't work in Ubuntu (boo)
+# But the pidfile path is the same in both (yay)
+#PIDFILEPATH=`awk -F'[:=]' -v IGNORECASE=1 '/^[[:blank:]]*(processManagement\.)?pidfilepath[[:blank:]]*[:=][[:blank:]]*/{print $2}' "$CONFIGFILE" | tr -d "[:blank:]\"'" | awk -F'#' '{print $1}'`
+PIDFILEPATH='/var/run/mongodb/mongod.pid '
 PIDDIR=`dirname $PIDFILEPATH`
 
 SYSTEM_LOG='/var/log/mongodb/mongod.log'
