@@ -7,8 +7,10 @@ services:
 
 script:
   - "docker-compose build"
-  # Add tests here
-  #- "docker-compose up" 
+  - "docker-compose up -d" 
+  - "docker-compose exec centos mongo --quiet '127.0.0.1/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+  - "docker-compose exec ubuntu mongo --quiet '127.0.0.1/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+  - "docker-compose down"
 
 notifications:
   email:
