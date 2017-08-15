@@ -5,8 +5,16 @@ services:
       context: .
       dockerfile: Dockerfile-centos
     image: mongodb:centos
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - ./db/centos:/var/lib/mongo:z
   ubuntu:
     build:
       context: .
       dockerfile: Dockerfile-ubuntu
     image: mongodb:ubuntu
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - ./db/ubuntu:/var/lib/mongo:z
