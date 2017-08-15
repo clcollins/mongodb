@@ -15,4 +15,9 @@
 
   mongo_runit_service_dirs:
     - /etc/service/mongodb
-    - /etc/service/mongodb/control
+
+  mongo_runit_service_files:
+    - src: mongod.run
+      dest: /etc/service/mongodb/run
+    - src: mongod.finish
+      dest: /etc/service/mongodb/finish

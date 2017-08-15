@@ -89,3 +89,10 @@
           state: directory
           mode: 0755
         with_items: "{{ mongo_runit_service_dirs }}"
+
+      - name: MongoDB | copy runit files
+        copy:
+          src: "{{ item.src }}"
+          dest: "{{ item.dest }}"
+          mode: 0755
+        with_items: "{{ runit_files }}"
