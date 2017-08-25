@@ -2,7 +2,7 @@ FROM centos:centos7
 LABEL maintainer Chris Collins <collins.christopher@gmail.com>
 
 LABEL name "mongodb"
-LABEL version "0.1"
+LABEL version "1.0"
 LABEL release "1"
 LABEL summary "Community Honey Network mongodb container"
 LABEL description "MongoDB is an open-source, document database designed for ease of development and scaling"
