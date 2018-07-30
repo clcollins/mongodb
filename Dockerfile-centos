@@ -12,6 +12,7 @@ LABEL changelog-url "https://github.com/CommunityHoneyNetwork/mongodb/commits/ma
 ENV playbook "mongodb.yml"
 
 RUN yum install -y epel-release \
+      && yum update -y \
       && yum install -y ansible
 
 RUN echo "localhost ansible_connection=local" >> /etc/ansible/hosts

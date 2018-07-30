@@ -1,4 +1,4 @@
-FROM ubuntu:17.10
+FROM ubuntu:18.04
 LABEL maintainer Chris Collins <collins.christopher@gmail.com>
 
 LABEL name "mongodb"
@@ -12,6 +12,7 @@ LABEL changelog-url "https://github.com/CommunityHoneyNetwork/mongodb/commits/ma
 ENV playbook "mongodb.yml"
 
 RUN apt-get update \
+      && apt-get upgrade -y \
       && apt-get install -y ansible
 
 RUN echo "localhost ansible_connection=local" >> /etc/ansible/hosts
